@@ -23,5 +23,8 @@
   "bugs": {
     "url": "https://github.com/gherardovarando/leaflet-tilepoints/issues"
   },
-  "homepage": "https://github.com/gherardovarando/leaflet-tilepoints#readme"
+  "homepage": "https://github.com/gherardovarando/leaflet-tilepoints#readme",
+  "dependencies": {
+    "papaparse": "^4.2.0"
+  }
 }

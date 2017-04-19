@@ -18,6 +18,7 @@
 
  */
 'use strict';
+require('papaparse');
 // leaflet and PapaParse required
 if (L != undefined && Papa != undefined) {
 

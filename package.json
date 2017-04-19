@@ -1,0 +1,27 @@
+{
+  "name": "leaflet-tilepoints",
+  "version": "0.0.1",
+  "description": "leaflet layers to display points stored in tiles ",
+  "main": "leaflet-tilepoints.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gherardovarando/leaflet-tilepoints.git"
+  },
+  "keywords": [
+    "leaflet",
+    "tiles",
+    "points",
+    "markers",
+    "data",
+    "layer"
+  ],
+  "author": "gherardo varando <gherardo.varando@gmail.com>",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/gherardovarando/leaflet-tilepoints/issues"
+  },
+  "homepage": "https://github.com/gherardovarando/leaflet-tilepoints#readme"
+}

@@ -23,11 +23,6 @@ if (L != undefined && Papa != undefined) {
 
     L.CsvTiles = L.FeatureGroup.extend({
         options: {
-            bounds: [
-                [-256, 0],
-                [0, 256]
-            ],
-            maxTiles: 4,
             tileSize: 256,
             size: 256,
             scale: 1, //scale to apply before draw the point
@@ -117,9 +112,10 @@ if (L != undefined && Papa != undefined) {
             if (this.view.row == references[0].row && this.view.col == references[0].col) return;
             this._group.clearLayers();
             this.view = references[0];
-            references.splice(0, this.options.maxTiles).map((ref) => {
-                this._read(ref);
-            })
+            this._read(this.view);
+            // references.splice(0, 1).map((ref) => {
+            //     this._read(ref);
+            // })
         },
 
         _bindEvents: function() {

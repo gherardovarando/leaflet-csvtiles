@@ -27,21 +27,21 @@
     });
     var lc = L.control.layers({});
     map.addControl(lc);
-    var base = L.tileLayer('http://vps136.cesvima.upm.es/maps/Hippocampus_vglut1/vglut1_map_tiles/{z}/{x}/{y}.png', {
+    var base = L.tileLayer('prova_map_tiles/{z}/{x}/{y}.png', {
         maxZoom: 10,
         minZoom: 0,
         maxNativeZoom: 5,
-        tileSize: L.point([256, 162]),
+        tileSize: 256,
         bounds: [
             [-256, 0],
             [0, 256]
         ]
     });
-    var points = L.csvTiles("http://vps136.cesvima.upm.es/maps/Hippocampus_vglut1/points/points_Hipocampo_HBP21_id4_corte_40_vGlut1_X{x}_Y{y}.tif.csv", {
-        tileSize: 1024,
-        size: 45056,
-        scale: [0.0056818118181818181818181818181818181, -0.0056501116],
-        minZoom: 6,
+    var points = L.csvTiles("points/centroid_prova_X{x}_Y{y}.tif.json", {
+        tileSize: 128,
+        size: 1024,
+        scale: 1,
+        minZoom: 2,
         radius: 3,
         maxTiles: 1,
         localRS: true,

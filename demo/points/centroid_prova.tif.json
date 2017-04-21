@@ -1,0 +1,8 @@
+{
+  "name": "centroid_prova.tif",
+  "author": "gherardo",
+  "type": "pointsLayer",
+  "tileSize": 1024,
+  "size": 1024,
+  "pointsUrlTemplate": "points_prova.tif.csv"
+}

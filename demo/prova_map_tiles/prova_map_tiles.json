@@ -1,0 +1,1 @@
+{"date":"Fri Apr 21 10:33:02 CEST 2017","unitCal":"pixel","maxZoom":5,"author":"unknown","maxNativeZoom":5,"baseLayer":true,"type":"tilesLayer","sizeCal":1024.0,"tileSize":[256,256],"depthCal":1.0,"name":"prova_map_tiles","bounds":[[-256,0],[0,256]],"tilesUrlTemplate":"{z}\/{x}\/{y}.png","nSlice":1}

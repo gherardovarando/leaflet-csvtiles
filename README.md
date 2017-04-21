@@ -1,7 +1,7 @@
 # Leaflet CSV Tiles
 #### by  gherardo.varando <gherardo.varando@gmail.com>
 
-#### demo at https://gherardovarando.github.io/leaflet-csvtiles/
+#### [demo](https://gherardovarando.github.io/leaflet-csvtiles/demo/index.html)
 
 leaflet-csvtiles is a leaflet plugin that load points from tiled csv files, using the amazing [PapaParse](http://papaparse.com/) library.
 

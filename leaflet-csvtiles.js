@@ -26,6 +26,7 @@ if (L != undefined && Papa != undefined) {
             tileSize: 256,
             size: 256,
             scale: 1, //scale to apply before draw the point
+            bounds: undefined,
             localRS: false, //if points are stored within a local (tile) reference system
             origin: [0, 0], //points offset
             offset: [0, 0], //tiles offset
@@ -51,23 +52,25 @@ if (L != undefined && Papa != undefined) {
         initialize: function(url, options) {
             L.Util.setOptions(this, options);
             this._url = url;
+            if (!Array.isArray(this.options.scale)) {
+                this.options.scale = [this.options.scale, this.options.scale];
+            }
+            if (!Array.isArray(this.options.size)) {
+                this.options.size = [this.options.size, this.options.size];
+            }
+            if (!Array.isArray(this.options.tileSize)) {
+                this.options.tileSize = [this.options.tileSize, this.options.tileSize];
+            }
             this._group = L.featureGroup();
             if (this.options.grid) {
                 this._grid = L.featureGroup();
-                let scale = this.options.scale;
-                let scaleX, scaleY;
-                if (Array.isArray(scale)) {
-                    scaleX = scale[0];
-                    scaleY = scale[1];
-                } else if (scale > 0) {
-                    scaleX = scale;
-                    scaleY = scale;
-                }
-                for (var x = 0; x < this.options.size; x = x + this.options.tileSize) {
-                    for (var y = 0; y < this.options.size; y = y + this.options.tileSize) {
+                let scaleX = this.options.scale[0];
+                let scaleY = this.options.scale[1];
+                for (var x = 0; x < this.options.size[0]; x = x + this.options.tileSize[0]) {
+                    for (var y = 0; y < this.options.size[1]; y = y + this.options.tileSize[1]) {
                         let m = L.rectangle([
                             [y * scaleY, x * scaleX],
-                            [(y + this.options.tileSize) * scaleY, (x + this.options.tileSize) * scaleX]
+                            [(y + this.options.tileSize[1]) * scaleY, (x + this.options.tileSize[0]) * scaleX]
                         ], {
                             color: this.options.color,
                             fillColor: this.options.color,
@@ -142,27 +145,19 @@ if (L != undefined && Papa != undefined) {
         //bounds are latlangbounds
         _getReferences: function(bounds) {
             let tileSize = this.options.tileSize;
-            let scale = this.options.scale;
-            let scaleX, scaleY;
-            if (Array.isArray(scale)) {
-                scaleX = scale[0];
-                scaleY = scale[1];
-            } else if (scale > 0) {
-                scaleX = scale;
-                scaleY = scale;
-            }
+            let scaleX = this.options.scale[0];
+            let scaleY = this.options.scale[1];
             let offset = this.options.offset;
             let origin = this.options.origin;
             let s = 1;
             if (bounds) {
                 var temp = [];
-                let siz = this.options.size;
-                var xstart = Math.floor(bounds.getWest() / (tileSize * scaleX));
-                var xstop = Math.floor(bounds.getEast() / (tileSize * scaleX));
-                var ystart = Math.floor(bounds.getNorth() / (tileSize * scaleY));
-                var ystop = Math.floor(bounds.getSouth() / (tileSize * scaleY));
-                if (xstop === (bounds.getEast() / (tileSize * scaleX))) xstop--;
-                if (ystop === (bounds.getSouth() / (tileSize * scaleY))) ystop--;
+                var xstart = Math.floor(bounds.getWest() / (tileSize[0] * scaleX));
+                var xstop = Math.floor(bounds.getEast() / (tileSize[0] * scaleX));
+                var ystart = Math.floor(bounds.getNorth() / (tileSize[1] * scaleY));
+                var ystop = Math.floor(bounds.getSouth() / (tileSize[1] * scaleY));
+                if (xstop === (bounds.getEast() / (tileSize[0] * scaleX))) xstop--;
+                if (ystop === (bounds.getSouth() / (tileSize[1] * scaleY))) ystop--;
                 for (var i = xstart; i <= xstop; i++) {
                     for (var j = ystart; j <= ystop; j++) {
                         //if (i>=0 && j>=0){
@@ -179,14 +174,12 @@ if (L != undefined && Papa != undefined) {
                     return ({
                         col: coord[0] + offset[0],
                         row: coord[1] + offset[1],
-                        x: coord[0] * s + origin[0],
-                        y: coord[1] * s + origin[1]
+                        x: coord[0] * s[0] + origin[0],
+                        y: coord[1] * s[1] + origin[1]
                     })
                 });
 
                 return (res);
-            } else {
-                return this._getReferences(L.latLngBounds([0, this.options.size], [0, this.options.size]));
             }
         },
 
@@ -212,15 +205,8 @@ if (L != undefined && Papa != undefined) {
         },
 
         _addPoints: function(point) {
-            let scale = this.options.scale;
-            let scaleX, scaleY;
-            if (Array.isArray(scale)) {
-                scaleX = scale[0];
-                scaleY = scale[1];
-            } else if (scale > 0) {
-                scaleX = scale;
-                scaleY = scale;
-            }
+            let scaleX = this.options.scale[0];
+            let scaleY = this.options.scale[1];
             if (!(point[0] == NaN) && !(point[1] == NaN)) {
                 this._group.addLayer(L.circleMarker([point[1] * scaleY, point[0] * scaleX], {
                     radius: this.options.radius,

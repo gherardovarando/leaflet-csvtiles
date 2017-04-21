@@ -8,7 +8,7 @@
     <title>leaflet-csvtiles demo</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
-    <script src="../node_modules/papaparse/papaparse.js"></script>
+    <script src="../lib/papaparse.min.js"></script>
     <script src="../leaflet-csvtiles.js"></script>
 
 </head>
@@ -27,26 +27,30 @@
     });
     var lc = L.control.layers({});
     map.addControl(lc);
-    var base = L.tileLayer('prova_map_tiles/{z}/{x}/{y}.png', {
-        maxZoom: 10,
+    var base = L.tileLayer('heic1112a_tiles/{z}/{x}/{y}.png', {
+        maxZoom: 8,
         minZoom: 0,
         maxNativeZoom: 5,
-        tileSize: 256,
+        tileSize: L.point([241,256]),
         bounds: [
             [-256, 0],
             [0, 256]
         ]
     });
-    var points = L.csvTiles("points/centroid_prova_X{x}_Y{y}.tif.json", {
-        tileSize: [128,256],
-        size: 1024,
-        scale: 1,
+    var points = L.csvTiles("points/points_heic1112a_X{x}_Y{y}.tif.csv", {
+        tileSize: 1000,
+        size: 6856,
+        scale: [0.03732383459 ,-0.03733955659],
         minZoom: 2,
         radius: 3,
-        maxTiles: 1,
         localRS: true,
-        auto: true,
         grid: true,
+        color: 'red',
+        fillColor: 'orange',
+        fillOpacity: 0.8,
+        opacity: 1,
+        weight: 2,
+        radius: 3,
         attribution: '<a href="https://github.com/gherardovarando/leaflet-csvtiles">csv-tiles</a> '
     });
     base.addTo(map);
@@ -54,7 +58,7 @@
     points.addTo(map);
     lc.addOverlay(points, 'Synapsis');
 
-    map.setView([-125, 125], 6);
+    map.setView([-125, 125], 3);
 </script>
 
 

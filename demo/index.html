@@ -31,16 +31,16 @@
         maxZoom: 8,
         minZoom: 0,
         maxNativeZoom: 5,
-        tileSize: 256,
+        tileSize: [256,241],
         bounds: [
             [-256, 0],
             [0, 256]
         ]
     });
     var points = L.csvTiles("points/points_heic1112a_X{x}_Y{y}.tif.csv", {
-        tileSize: 128,
-        size: 1024,
-        scale: [0.25,-0.25],
+        tileSize: 1000,
+        size: 6856,
+        scale: [0.03733955659,-0.03732383459],
         minZoom: 2,
         radius: 3,
         localRS: true,

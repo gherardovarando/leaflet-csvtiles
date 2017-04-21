@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+
+    <title>leaflet-csvtiles demo</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
+    <script src="../node_modules/papaparse/papaparse.js"></script>
+    <script src="../leaflet-csvtiles.js"></script>
+
+</head>
+
+<body>
+
+    <div id="map" style="height:600px; width: 800px;"></div>
+
+</body>
+
+
+<script>
+    var map = L.map('map', {
+        crs: L.CRS.Simple,
+        zoomControl: true
+    });
+    var lc = L.control.layers({});
+    map.addControl(lc);
+    var base = L.tileLayer('http://vps136.cesvima.upm.es/maps/Hippocampus_vglut1/vglut1_map_tiles/{z}/{x}/{y}.png', {
+        maxZoom: 10,
+        minZoom: 0,
+        maxNativeZoom: 5,
+        tileSize: L.point([256, 162]),
+        bounds: [
+            [-256, 0],
+            [0, 256]
+        ]
+    });
+    var points = L.csvTiles("http://vps136.cesvima.upm.es/maps/Hippocampus_vglut1/points/points_Hipocampo_HBP21_id4_corte_40_vGlut1_X{x}_Y{y}.tif.csv", {
+        tileSize: 1024,
+        size: 45056,
+        scale: [0.0056818118181818181818181818181818181, -0.0056501116],
+        minZoom: 6,
+        radius: 3,
+        maxTiles: 1,
+        localRS: true,
+        auto: true,
+        grid: true,
+        attribution: '<a href="https://github.com/gherardovarando/leaflet-csvtiles">csv-tiles</a> '
+    });
+    base.addTo(map);
+    lc.addBaseLayer(base, 'Hipocampo');
+    points.addTo(map);
+    lc.addOverlay(points, 'Synapsis');
+
+    map.setView([-125, 125], 6);
+</script>
+
+
+</html>

@@ -26,15 +26,11 @@
     });
     var lc = L.control.layers({});
     map.addControl(lc);
-    var base = L.tileLayer('heic1112a_tiles/{z}/{x}/{y}.png', {
+    var base = L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png', {
         maxZoom: 8,
         minZoom: 0,
         maxNativeZoom: 5,
-        tileSize: L.point([241,256]),
-        bounds: [
-            [-256, 0],
-            [0, 256]
-        ]
+        tileSize: 256
     });
     var points = L.csvTiles("points/points_heic1112a_X{x}_Y{y}.tif.csv", {
         tileSize: [1000,1000],

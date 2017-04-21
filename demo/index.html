@@ -40,7 +40,7 @@
     var points = L.csvTiles("points/points_prova_X{x}_Y{y}.tif.json", {
         tileSize: 128,
         size: 1024,
-        scale: 1,
+        scale: [0.25,-0.25],
         minZoom: 2,
         radius: 3,
         localRS: true,

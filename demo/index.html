@@ -21,7 +21,6 @@
 
 
 <script>
-   console.log(Papa.parse);
     var map = L.map('map', {
         crs: L.CRS.Simple,
         zoomControl: true
@@ -44,9 +43,7 @@
         scale: 1,
         minZoom: 2,
         radius: 3,
-        maxTiles: 1,
         localRS: true,
-        auto: true,
         grid: true,
         attribution: '<a href="https://github.com/gherardovarando/leaflet-csvtiles">csv-tiles</a> '
     });

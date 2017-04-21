@@ -3,6 +3,7 @@
 
 
 #### [demo](https://gherardovarando.github.io/leaflet-csvtiles/demo/index.html)
+#### [demo](https://gherardovarando.github.io/leaflet-csvtiles/demo/index2.html)
 
 leaflet-csvtiles is a leaflet plugin that load points from tiled csv files, using the amazing [PapaParse](http://papaparse.com/) library.
 

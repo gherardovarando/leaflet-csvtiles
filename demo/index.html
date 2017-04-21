@@ -27,8 +27,8 @@
     });
     var lc = L.control.layers({});
     map.addControl(lc);
-    var base = L.tileLayer('prova_map_tiles/{z}/{x}/{y}.png', {
-        maxZoom: 10,
+    var base = L.tileLayer('heic1112a_tiles/{z}/{x}/{y}.png', {
+        maxZoom: 8,
         minZoom: 0,
         maxNativeZoom: 5,
         tileSize: 256,
@@ -37,7 +37,7 @@
             [0, 256]
         ]
     });
-    var points = L.csvTiles("points/points_prova_X{x}_Y{y}.tif.csv", {
+    var points = L.csvTiles("points/points_heic1112a_X{x}_Y{y}.tif.csv", {
         tileSize: 128,
         size: 1024,
         scale: [0.25,-0.25],

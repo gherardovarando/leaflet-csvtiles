@@ -1,9 +1,13 @@
 # Leaflet CSV Tiles
 #### by  gherardo.varando <gherardo.varando@gmail.com>
 
-#### [demo](https://gherardovarando.github.io/leaflet-csvtiles/demo/index.html)
+
+#### L.CRS.Simple [demo](https://gherardovarando.github.io/leaflet-csvtiles/demo/index.html)
+#### L.CRS.EPSG3857 [demo](https://gherardovarando.github.io/leaflet-csvtiles/demo/index2.html)
 
 leaflet-csvtiles is a leaflet plugin that load points from tiled csv files, using the amazing [PapaParse](http://papaparse.com/) library.
+
+** Currently the use of this plugin with CRS different than Simple is experimental**
 
 ## API
 
@@ -45,5 +49,3 @@ the following fields are as in the PapaParse configuration:
 #### Methods
 
 ``L.csvTiles`` extends ``L.featureGroup`` and inherits all its methods.
-
-#### Events

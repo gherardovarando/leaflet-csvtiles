@@ -8,7 +8,7 @@
     <title>leaflet-csvtiles demo</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
-    <script src="lib/papaparse.min.js"></script>
+    <script src="../lib/papaparse.min.js"></script>
     <script src="../leaflet-csvtiles.js"></script>
 
 </head>
@@ -34,7 +34,6 @@
     });
     var points = L.csvTiles("points/points_heic1112a_X{x}_Y{y}.tif.csv", {
         tileSize: [1000,1000],
-        bounds: [256,256],
         size: 6856,
         scale: [0.03732383459 ,0.03733955659],
         minZoom: 2,
@@ -50,9 +49,9 @@
         attribution: '<a href="https://github.com/gherardovarando/leaflet-csvtiles">csv-tiles</a> '
     });
     base.addTo(map);
-    lc.addBaseLayer(base, 'Base');
+    lc.addBaseLayer(base, 'Hipocampo');
     points.addTo(map);
-    lc.addOverlay(points, 'Points');
+    lc.addOverlay(points, 'Synapsis');
 
     map.setView([-125, 125], 3);
 </script>

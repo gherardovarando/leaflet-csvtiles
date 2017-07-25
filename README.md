@@ -48,4 +48,5 @@ the following fields are as in the PapaParse configuration:
 
 #### Methods
 
-``L.csvTiles`` extends ``L.featureGroup`` and inherits all its methods.
+
+#### Events

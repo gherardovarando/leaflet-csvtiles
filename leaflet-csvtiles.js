@@ -22,62 +22,63 @@
 if (L != undefined && Papa != undefined) {
 
   L.CsvTiles = L.FeatureGroup.extend({
-    options: {
-      tileSize: 256,
-      size: 256,
-      scale: 1, //scale to apply before draw the point
-      bounds: undefined,
-      localRS: false, //if points are stored within a local (tile) reference system
-      origin: [0, 0], //points offset
-      offset: [0, 0], //tiles offset
-      delimiter: "", // auto-detect
-      newline: "", // auto-detect
-      quoteChar: '"',
-      encoding: "",
-      radius: 1,
-      color: 'blue',
-      fillColor: 'blue',
-      weight: 1,
-      fillOpacity: 0.3,
-      opacity: 1,
-      minZoom: 0, //autodetect
-      grid: true
-    },
-    view: {
-      row: null,
-      col: null
-    },
-    url: '',
+      options: {
+        tileSize: 256,
+        size: 256,
+        scale: 1, //scale to apply before draw the point
+        bounds: undefined,
+        localRS: false, //if points are stored within a local (tile) reference system
+        origin: [0, 0], //points offset
+        offset: [0, 0], //tiles offset
+        delimiter: "", // auto-detect
+        newline: "", // auto-detect
+        quoteChar: '"',
+        encoding: "",
+        radius: 1,
+        color: 'blue',
+        fillColor: 'blue',
+        weight: 1,
+        fillOpacity: 0.3,
+        opacity: 1,
+        minZoom: 0, //autodetect
+        grid: true
+      },
+      view: {
+        row: null,
+        col: null
+      },
+      url: '',
 
-    initialize: function(url, options) {
-      L.Util.setOptions(this, options);
-      this._url = url;
-      if (!Array.isArray(this.options.scale)) {
-        this.options.scale = [this.options.scale, this.options.scale];
-      }
-      if (!Array.isArray(this.options.size)) {
-        this.options.size = [this.options.size, this.options.size];
-      }
-      if (!Array.isArray(this.options.tileSize)) {
-        this.options.tileSize = [this.options.tileSize, this.options.tileSize];
-      }
-      this._group = L.featureGroup();
-      if (this.options.grid) {
-        this._grid = L.featureGroup();
-        let scaleX = this.options.scale[0];
-        let scaleY = this.options.scale[1];
-        for (var x = 0; x < this.options.size[0]; x = x + this.options.tileSize[0]) {
-          for (var y = 0; y < this.options.size[1]; y = y + this.options.tileSize[1]) {
-            let m = L.rectangle([
-              [y * scaleY, x * scaleX],
-              [(y + this.options.tileSize[1]) * scaleY, (x + this.options.tileSize[0]) * scaleX]
-            ], {
-              color: this.options.color,
-              fillColor: this.options.color,
-              opacity: 0.5,
-              fillOpacity: 0,
-              weight: 1
-            });
+      initialize: function(url, options) {
+        L.Util.setOptions(this, options);
+        this._url = url;
+        if (this.options.bounds) {
+
+        }
+        if (!Array.isArray(this.options.scale)) {
+          this.options.scale = [this.options.scale, this.options.scale];
+        }
+        if (!Array.isArray(this.options.size)) {
+          this.options.size = [this.options.size, this.options.size];
+        }
+        if (!Array.isArray(this.options.tileSize)) {
+          this.options.tileSize = [this.options.tileSize, this.options.tileSize];
+        }
+        this._group = L.featureGroup();
+        if (this.options.grid) {
+          this._grid = L.featureGroup();
+          let scaleX = this.options.scale[0];
+          let scaleY = this.options.scale[1];
+          for (var x = 0; x < this.options.size[0]; x = x + this.options.tileSize[0]) {
+            for (var y = 0; y < this.options.size[1]; y = y + this.options.tileSize[1]) {
+              let m = L.rectangle([[y * scaleY, x * scaleX], [(y + this.options.tileSize[1]) * scaleY, (x + this.options.tileSize[0]) * scaleX] ],
+                {
+                  color: this.options.color,
+                  fillColor: this.options.color,
+                  opacity: 0.5,
+                  fillOpacity: 0,
+                  weight: 1
+                });
             this._grid.addLayer(m);
           }
         }
@@ -256,7 +257,7 @@ if (L != undefined && Papa != undefined) {
     }
   });
 
-  L.csvTiles = function(url, options) {
-    return new L.CsvTiles(url, options);
-  };
+L.csvTiles = function(url, options) {
+  return new L.CsvTiles(url, options);
+};
 }

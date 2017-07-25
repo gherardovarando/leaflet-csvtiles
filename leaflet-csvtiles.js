@@ -1,24 +1,25 @@
-/**
- * @author : gherardo varando (gherardo.varando@gmail.com)
- *
- * @license: GPL v3
- *     This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-
- */
+// Copyright (c) 2016 Gherardo Varando
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
 'use strict';
 // leaflet and PapaParse required
+const Papa = require('papaparse');
 if (L != undefined && Papa != undefined) {
 
   L.CsvTiles = L.FeatureGroup.extend({
@@ -103,6 +104,7 @@ if (L != undefined && Papa != undefined) {
         map.removeLayer(this._grid);
       }
       map.removeLayer(this._group);
+      this._unbindEvents();
     },
 
     _refreshView: function() {
@@ -123,23 +125,28 @@ if (L != undefined && Papa != undefined) {
 
     _bindEvents: function() {
       if (this._map instanceof L.Map) {
-        this._map.on('zoomend', () => {
-          if (this._map.getZoom() >= this.options.minZoom) {
-            if (this.options.grid) {
-              this._map.addLayer(this._grid);
-            }
-            this._map.addLayer(this._group);
-          } else {
-            if (this.options.grid) {
-              this._map.removeLayer(this._grid);
-            }
-            this._map.removeLayer(this._group);
-          }
-        });
-
+        this._map.on('zoomend', this._zoomEnd, this);
         this._map.on('moveend', this._refreshView, this);
-
       }
+    },
+
+    _zoomEnd: function() {
+      if (this._map.getZoom() >= this.options.minZoom) {
+        if (this.options.grid) {
+          this._map.addLayer(this._grid);
+        }
+        this._map.addLayer(this._group);
+      } else {
+        if (this.options.grid) {
+          this._map.removeLayer(this._grid);
+        }
+        this._map.removeLayer(this._group);
+      }
+    },
+
+    _unbindEvents: function() {
+      this._map.off('moveend', this._refreshView, this);
+      this._map.off('zoomend', this._zoomEnd, this);
     },
 
     //bounds are latlangbounds
@@ -205,18 +212,17 @@ if (L != undefined && Papa != undefined) {
         });
       } else if (url.startsWith('file') || url.startsWith('/')) {
         //we are in node, for example electron app
-        download = false;
         try {
           const fs = require('fs');
         } catch (e) {
           throw e;
         } finally {
-          fs.readFile(url, this.options.encoding, (err, data) => {
+          require('fs').readFile(url, this.options.encoding || 'utf8', (err, data) => {
             if (err) throw err;
             Papa.parse(data, {
               dynamicTyping: true,
               fastMode: true,
-              download: download,
+              download: false,
               delimiter: this.options.delimeter,
               newline: this.options.newline,
               step: (results, parser) => {
@@ -230,6 +236,7 @@ if (L != undefined && Papa != undefined) {
           });
         }
       } else {
+        console.log(url);
         throw 'Error: cant read local file if not in Node.js'
       }
     },

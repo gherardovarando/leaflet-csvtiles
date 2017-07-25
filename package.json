@@ -1,14 +1,14 @@
 {
   "name": "leaflet-csvtiles",
   "version": "0.0.1",
-  "description": "leaflet layers to display points stored in tiles ",
+  "description": "leaflet layers to display points stored in csv tiles ",
   "main": "leaflet-csvtiles.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/gherardovarando/leaflet-tilepoints.git"
+    "url": "git+https://github.com/gherardovarando/leaflet-csvtiles.git"
   },
   "keywords": [
     "leaflet",
@@ -19,11 +19,11 @@
     "layer"
   ],
   "author": "gherardo varando <gherardo.varando@gmail.com>",
-  "license": "GPL-3.0",
+  "license": "MIT",
   "bugs": {
-    "url": "https://github.com/gherardovarando/leaflet-tilepoints/issues"
+    "url": "https://github.com/gherardovarando/leaflet-csvtiles/issues"
   },
-  "homepage": "https://github.com/gherardovarando/leaflet-tilepoints#readme",
+  "homepage": "https://github.com/gherardovarando/leaflet-csvtiles#readme",
   "dependencies": {
     "papaparse": "^4.2.0"
   }

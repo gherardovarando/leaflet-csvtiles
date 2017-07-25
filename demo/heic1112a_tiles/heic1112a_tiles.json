@@ -1,1 +1,0 @@
-{"date":"Fri Apr 21 12:04:31 CEST 2017","unitCal":"pixel","maxZoom":5,"author":"unknown","maxNativeZoom":5,"baseLayer":true,"type":"tilesLayer","sizeCal":6457.0,"tileSize":[241,256],"depthCal":3.0,"name":"heic1112a_tiles","bounds":[[-256,0],[0,256]],"tilesUrlTemplate":"{z}\/{x}\/{y}.png","nSlice":3}

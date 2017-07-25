@@ -1,4 +1,4 @@
-// Copyright (c) 2016 Gherardo Varando
+// Copyright (c) 2017 Gherardo Varando
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -19,7 +19,6 @@
 // SOFTWARE.
 'use strict';
 // leaflet and PapaParse required
-const Papa = require('papaparse');
 if (L != undefined && Papa != undefined) {
 
   L.CsvTiles = L.FeatureGroup.extend({

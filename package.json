@@ -1,8 +1,8 @@
 {
-  "name": "leaflet-tilepoints",
+  "name": "leaflet-csvtiles",
   "version": "0.0.1",
   "description": "leaflet layers to display points stored in tiles ",
-  "main": "leaflet-tilepoints.js",
+  "main": "leaflet-csvtiles.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

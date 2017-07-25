@@ -19,6 +19,7 @@
  */
 'use strict';
 // leaflet and PapaParse required
+const Papa = require('papaparse');
 if (L != undefined && Papa != undefined) {
 
     L.CsvTiles = L.FeatureGroup.extend({

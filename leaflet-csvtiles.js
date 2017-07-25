@@ -187,7 +187,7 @@ if (L != undefined && Papa != undefined) {
       let url = this._url;
       url = url.replace("{x}", reference.col);
       url = url.replace("{y}", reference.row);
-      if (url.startsWith('http')) {
+      if (url.startsWith('http') || (typeof module == 'undefined' || !module.exports)) {
         Papa.parse(url, {
           dynamicTyping: true,
           fastMode: true,
@@ -203,7 +203,7 @@ if (L != undefined && Papa != undefined) {
             throw e;
           }
         });
-      } else if (typeof module !== 'undefined' && module.exports) {
+      } else if (url.startsWith('file') || url.startsWith('/')) {
         //we are in node, for example electron app
         download = false;
         try {

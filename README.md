@@ -1,4 +1,3 @@
-# Leaflet CSV Tiles
 #### by  gherardo.varando <gherardo.varando@gmail.com>
 
 

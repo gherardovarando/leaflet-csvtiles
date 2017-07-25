@@ -25,6 +25,6 @@
   },
   "homepage": "https://github.com/gherardovarando/leaflet-csvtiles#readme",
   "dependencies": {
-    "papaparse": "^4.2.0"
+    "papaparse": "^4.3.3"
   }
 }

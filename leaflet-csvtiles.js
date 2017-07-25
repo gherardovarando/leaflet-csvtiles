@@ -18,7 +18,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 'use strict';
+
 // leaflet and PapaParse required
+
 if (L != undefined && Papa != undefined) {
 
   L.CsvTiles = L.FeatureGroup.extend({

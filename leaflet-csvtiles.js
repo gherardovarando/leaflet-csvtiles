@@ -26,8 +26,8 @@ if (L != undefined && Papa != undefined) {
   L.CsvTiles = L.FeatureGroup.extend({
     options: {
       columns: {
-        lat: 0,
-        lng: 1
+        x: 0,
+        y: 1
       },
       tileSize: 256,
       size: 256,
@@ -64,12 +64,9 @@ if (L != undefined && Papa != undefined) {
       if (!Array.isArray(this.options.tileSize)) {
         this.options.tileSize = [this.options.tileSize, this.options.tileSize];
       }
-      if (Array.isArray(this.options.bounds)) {
-        this.options.bounds = L.latLngBounds(this.options.bounds);
-      }
-      if (this.options.bounds && this.options.bounds.isValid()) {
-
-        this.options.scale = [(this.options.bounds.getEast() - this.options.bounds.getWest()) / this.options.size[0], (this.options.bounds.getSouth() - this.options.bounds.getNorth()) / this.options.size[1]];
+      if (this.options.bounds) {
+        let b = L.latLngBounds(this.options.bounds);
+        this.options.scale = [(b.getEast() - b.getWest()) / this.options.size[0], (b.getSouth() - b.getNorth()) / this.options.size[1]];
       }
       if (!Array.isArray(this.options.scale)) {
         this.options.scale = [this.options.scale, this.options.scale];
@@ -79,11 +76,14 @@ if (L != undefined && Papa != undefined) {
         this._grid = L.featureGroup();
         let scaleX = this.options.scale[0];
         let scaleY = this.options.scale[1];
+        let b = L.latLngBounds(this.options.bounds);
+        let x0 = b.getWest();
+        let y0 = b.getNorth();
         for (var x = 0; x < this.options.size[0]; x = x + this.options.tileSize[0]) {
           for (var y = 0; y < this.options.size[1]; y = y + this.options.tileSize[1]) {
             let m = L.rectangle([
-              [y * scaleY, x * scaleX],
-              [(y + this.options.tileSize[1]) * scaleY, (x + this.options.tileSize[0]) * scaleX]
+              [y0+y * scaleY, x0+x * scaleX],
+              [y0+(y + this.options.tileSize[1]) * scaleY, x0+(x + this.options.tileSize[0]) * scaleX]
             ], {
               color: this.options.color,
               fillColor: this.options.color,
@@ -95,6 +95,7 @@ if (L != undefined && Papa != undefined) {
           }
         }
       }
+      this._grid.addEventParent(this);
       this._group.addEventParent(this);
     },
 
@@ -102,7 +103,7 @@ if (L != undefined && Papa != undefined) {
       this._map = map;
       if (this._map.getZoom() >= this.options.minZoom) {
         if (this.options.grid) {
-          this._map.addLayer(this._grid);
+          //this._map.addLayer(this._grid);
         }
         this._map.addLayer(this._group);
       }
@@ -126,6 +127,7 @@ if (L != undefined && Papa != undefined) {
       let center = this._map.getCenter();
       if (zoom < this.options.minZoom) return;
       let references = this._getReferences(L.latLngBounds([center]));
+      if (!references || !references[0]) return;
       if (this.view.row == references[0].row && this.view.col == references[0].col) return;
       this._group.clearLayers();
       this.view = references[0];
@@ -215,7 +217,7 @@ if (L != undefined && Papa != undefined) {
           newline: this.options.newline,
           encoding: this.options.encoding,
           step: (results, parser) => {
-            this._addPoints([results.data[0][this.options.columns.lng] + reference.x, results.data[0][this.options.columns.lat] + reference.y]);
+            this._addPoints([results.data[0][this.options.columns.x] + reference.x, results.data[0][this.options.columns.y] + reference.y]);
           },
           complete: (results, file) => {},
           error: (e, file) => {
@@ -238,7 +240,7 @@ if (L != undefined && Papa != undefined) {
               delimiter: this.options.delimeter,
               newline: this.options.newline,
               step: (results, parser) => {
-                this._addPoints([results.data[0][this.options.columns.lng] + reference.x, results.data[0][this.options.columns.lat] + reference.y]);
+                this._addPoints([results.data[0][this.options.columns.x] + reference.x, results.data[0][this.options.columns.y] + reference.y]);
               },
               complete: (results, file) => {},
               error: (e, file) => {

@@ -6,8 +6,8 @@
   <meta charset="utf-8">
 
   <title>leaflet-csvtiles demo</title>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css" />
-  <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.1.0/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.1.0/dist/leaflet.js"></script>
   <script src="../lib/papaparse.min.js"></script>
   <script src="../leaflet-csvtiles.js"></script>
 
@@ -21,6 +21,10 @@
 
 
 <script>
+  var bounds = [
+    [54.559322, -5.767822],
+    [56.1210604, -3.021240]
+  ];
   var map = L.map('map', {
     zoomControl: true
   });
@@ -33,17 +37,13 @@
     tileSize: 256
   });
   var points = L.csvTiles("points/points_heic1112a_X{x}_Y{y}.tif.csv", {
+    columns: {
+      x: 0,
+      y: 1
+    },
     tileSize: [1000, 1000],
     size: 6856,
-    bounds: [
-      [-10,
-        50
-      ],
-      [
-        80,
-        150
-      ]
-    ],
+    bounds: bounds,
     minZoom: 2,
     radius: 3,
     localRS: true,
@@ -60,8 +60,12 @@
   lc.addBaseLayer(base, 'World');
   points.addTo(map);
   lc.addOverlay(points, 'Points');
+  L.marker(bounds[0]).addTo(map);
+  L.marker(bounds[1]).addTo(map);
+  L.rectangle(bounds, {color: "#ff7800", weight: 1}).addTo(map);
+  L.marker(L.latLngBounds(bounds).getCenter()).addTo(map);
+  map.fitBounds(bounds);
 
-  map.setView([40, 140], 3);
 </script>
 
 

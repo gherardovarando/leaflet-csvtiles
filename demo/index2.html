@@ -3,57 +3,65 @@
 
 <head>
 
-    <meta charset="utf-8">
+  <meta charset="utf-8">
 
-    <title>leaflet-csvtiles demo</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
-    <script src="../lib/papaparse.min.js"></script>
-    <script src="../leaflet-csvtiles.js"></script>
+  <title>leaflet-csvtiles demo</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
+  <script src="../lib/papaparse.min.js"></script>
+  <script src="../leaflet-csvtiles.js"></script>
 
 </head>
 
 <body>
 
-    <div id="map" style="height:600px; width: 800px;"></div>
+  <div id="map" style="height:600px; width: 800px;"></div>
 
 </body>
 
 
 <script>
-    var map = L.map('map', {
-        zoomControl: true
-    });
-    var lc = L.control.layers({});
-    map.addControl(lc);
-    var base = L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png', {
-        maxZoom: 8,
-        minZoom: 0,
-        maxNativeZoom: 5,
-        tileSize: 256
-    });
-    var points = L.csvTiles("points/points_heic1112a_X{x}_Y{y}.tif.csv", {
-        tileSize: [1000,1000],
-        size: 6856,
-        scale: [0.03732383459 ,0.03733955659],
-        minZoom: 2,
-        radius: 3,
-        localRS: true,
-        grid: true,
-        color: 'red',
-        fillColor: 'orange',
-        fillOpacity: 0.8,
-        opacity: 1,
-        weight: 2,
-        radius: 3,
-        attribution: '<a href="https://github.com/gherardovarando/leaflet-csvtiles">csv-tiles</a> '
-    });
-    base.addTo(map);
-    lc.addBaseLayer(base, 'World');
-    points.addTo(map);
-    lc.addOverlay(points, 'Points');
+  var map = L.map('map', {
+    zoomControl: true
+  });
+  var lc = L.control.layers({});
+  map.addControl(lc);
+  var base = L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png', {
+    maxZoom: 8,
+    minZoom: 0,
+    maxNativeZoom: 5,
+    tileSize: 256
+  });
+  var points = L.csvTiles("points/points_heic1112a_X{x}_Y{y}.tif.csv", {
+    tileSize: [1000, 1000],
+    size: 6856,
+    bounds: [
+      [-10,
+        50
+      ],
+      [
+        80,
+        150
+      ]
+    ],
+    minZoom: 2,
+    radius: 3,
+    localRS: true,
+    grid: true,
+    color: 'red',
+    fillColor: 'orange',
+    fillOpacity: 0.8,
+    opacity: 1,
+    weight: 2,
+    radius: 3,
+    attribution: '<a href="https://github.com/gherardovarando/leaflet-csvtiles">csv-tiles</a> '
+  });
+  base.addTo(map);
+  lc.addBaseLayer(base, 'World');
+  points.addTo(map);
+  lc.addOverlay(points, 'Points');
 
-    map.setView([40, 140], 3);
+  map.setView([40, 140], 3);
 </script>
 
 

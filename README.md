@@ -8,7 +8,7 @@
 
 leaflet-csvtiles is a leaflet plugin that load points from tiled csv files, using the amazing [PapaParse](http://papaparse.com/) library.
 
-** This plugin was developed mainly for application with Simple CRS, with different CRS the tiles will always be uniformly spaced in lat and lng (so not uniformly spaced in the map see the demo for the problem visualization)**
+
 
 ## API
 

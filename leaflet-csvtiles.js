@@ -107,7 +107,7 @@ if (L != undefined && Papa != undefined) {
       this._map = map;
       if (this._map.getZoom() >= this.options.minZoom) {
         if (this.options.grid) {
-          //this._map.addLayer(this._grid);
+          this._map.addLayer(this._grid);
         }
         this._map.addLayer(this._group);
       }

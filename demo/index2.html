@@ -60,11 +60,11 @@
   lc.addBaseLayer(base, 'World');
   points.addTo(map);
   lc.addOverlay(points, 'Points');
+  map.fitBounds(bounds);
   L.marker(bounds[0]).addTo(map);
   L.marker(bounds[1]).addTo(map);
   L.rectangle(bounds, {color: "#ff7800", weight: 1}).addTo(map);
   L.marker(L.latLngBounds(bounds).getCenter()).addTo(map);
-  map.fitBounds(bounds);
 
 </script>
 

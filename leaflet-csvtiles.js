@@ -81,19 +81,24 @@ if (L != undefined && Papa != undefined) {
         let x0 = this._origin[0];
         let y0 = this._origin[1];
         for (var x = 0; x < this.options.size[0]; x = x + this.options.tileSize[0]) {
-          for (var y = 0; y < this.options.size[1]; y = y + this.options.tileSize[1]) {
-            let m = L.rectangle([
-              [y0 + y * scaleY, x0 + x * scaleX],
-              [y0 + (y + this.options.tileSize[1]) * scaleY, x0 + (x + this.options.tileSize[0]) * scaleX]
-            ], {
-              color: this.options.color,
-              fillColor: this.options.color,
-              opacity: 0.5,
-              fillOpacity: 0,
-              weight: 1
-            });
-            this._grid.addLayer(m);
-          }
+          L.polyline([
+            [y0, x0 + x * scaleX],
+            [y0 + this.options.size[1] * scaleY, x0 + x * scaleX]
+          ], {
+            color: this.options.color,
+            opacity: 0.5,
+            weight: 1
+          }).addTo(this._grid);
+        }
+        for (var y = 0; y < this.options.size[1]; y = y + this.options.tileSize[1]) {
+          L.polyline([
+            [y0 + y * scaleY, x0],
+            [y0 + y * scaleY, x0 + this.options.size[0] * scaleX]
+          ], {
+            color: this.options.color,
+            opacity: 0.5,
+            weight: 1
+          }).addTo(this._grid);
         }
       }
       this._grid.addEventParent(this);
@@ -195,7 +200,7 @@ if (L != undefined && Papa != undefined) {
           return ({
             col: coord[0] + offset[0],
             row: coord[1] + offset[1],
-            x: coord[0] * s[0] ,
+            x: coord[0] * s[0],
             y: coord[1] * s[1]
           })
         });

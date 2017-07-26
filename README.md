@@ -1,53 +1,57 @@
-# by gherardo.varando [gherardo.varando@gmail.com](mailto:gherardo.varando@gmail.com)
+#### by  gherardo.varando <gherardo.varando@gmail.com>
 
-# L.CRS.Simple [demo](https://gherardovarando.github.io/leaflet-csvtiles/demo/index.html)
 
-# L.CRS.EPSG3857 [demo](https://gherardovarando.github.io/leaflet-csvtiles/demo/index2.html)
+
+
+#### L.CRS.Simple [demo](https://gherardovarando.github.io/leaflet-csvtiles/demo/index.html)
+#### L.CRS.EPSG3857 [demo](https://gherardovarando.github.io/leaflet-csvtiles/demo/index2.html) (points have no meaning herer)
 
 leaflet-csvtiles is a leaflet plugin that load points from tiled csv files, using the amazing [PapaParse](http://papaparse.com/) library.
 
-**Currently the use of this plugin with CRS different than Simple is experimental**
+** This plugin was developed mainly for application with Simple CRS, with different CRS the tiles will always be uniformly spaced in lat and lng (so not uniformly spaced in the map see the demo for the problem visualization)**
 
 ## API
 
+
 ### Creation
 
-#### `L.csvTiles(url, options)`
-
-- `url` url template of the csv tiled files.
-- `options` options object (optional)
+##### `` L.csvTiles(url, options) ``
+- ``url`` url template of the csv tiled files.
+-  ``options`` options object (optional)
 
 #### Options
 
 The option that can be passed on creation
-
-- `size` Number or Number[] size of the space covered by the csvTiles (the unit are not map-unit but independent).
-- `tileSize` Number or Number[] size of one tile (same unit as `size`).
-- `scale` Number or Number[], scale to the points coordinates (multiply).
-- `bounds` LatLngBounds, (in map coordinates) if provided the `scale` parameter will be computed to fit the points into the given `bounds`.
-- `localRS` boolean, if points are given in local (tile) coordinates in each tile (that is if `true` every point coordinate will be shifted with respect to the tile position).
-- `origin` offset of the points coordinates (same unit as `size`).
-- `offset` offset of the tile indexes.
-- `minZoom`
-- `grid` if a grid showing tiles borders should be plotted.
+- ``columns`` Object:
+  - ``lat`` Integer index of the column that stores the lat in the csv.
+  - ``lng`` Integer index of the column that stores the lng in the csv.
+- ``size`` Number or Number[] size of the space covered by the csvTiles.
+- ``tileSize`` Number or Number[] size of one tile (same unit as ``size``).
+- ``scale`` Number or Number[], scale to apply to the points coordinates.
+- ``bounds`` LatLngBounds, (in map coordinates) if  provided the ``scale`` parameter will be computed to fit the points into the given ``bounds``.
+- ``localRS `` boolean, if points are given in local (tile) coordinates in each tile.
+- ``origin`` offset of the points coordinates
+- ``offset`` offset of the tile indexes.
+- ``minZoom``
+- ``grid`` if a grid showing tiles borders should be plotted.
 
 the following fields are relative to circleMarker options:
+- ``radius``
+- ``color``
+- ``fillColor``
+- ``weight``
+- ``fillOpacity``
+- ``opacity``
 
-- `radius`
-- `color`
-- `fillColor`
-- `weight`
-- `fillOpacity`
-- `opacity`
 
 the following fields are as in the PapaParse configuration:
-
-- `delimiter`
-- `newline`
-- `quoteChar`
-- `encoding`
+- ``delimiter``
+- ``newline``
+- ``quoteChar``
+- ``encoding``
 
 #### Methods
+
 
 #### Events
 
@@ -55,10 +59,22 @@ the following fields are as in the PapaParse configuration:
 
 The MIT License (MIT)
 
-Copyright (c) 2016 Gherardo Varando (gherardo.varando@gmail.com)
+Copyright (c) 2017 Gherardo Varando (gherardo.varando@gmail.com)
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.

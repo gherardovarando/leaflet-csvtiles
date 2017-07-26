@@ -18,67 +18,79 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 'use strict';
+
 // leaflet and PapaParse required
+
 if (L != undefined && Papa != undefined) {
 
   L.CsvTiles = L.FeatureGroup.extend({
-      options: {
-        tileSize: 256,
-        size: 256,
-        scale: 1, //scale to apply before draw the point
-        bounds: undefined,
-        localRS: false, //if points are stored within a local (tile) reference system
-        origin: [0, 0], //points offset
-        offset: [0, 0], //tiles offset
-        delimiter: "", // auto-detect
-        newline: "", // auto-detect
-        quoteChar: '"',
-        encoding: "",
-        radius: 1,
-        color: 'blue',
-        fillColor: 'blue',
-        weight: 1,
-        fillOpacity: 0.3,
-        opacity: 1,
-        minZoom: 0, //autodetect
-        grid: true
+    options: {
+      columns: {
+        lat: 0,
+        lng: 1
       },
-      view: {
-        row: null,
-        col: null
-      },
-      url: '',
+      tileSize: 256,
+      size: 256,
+      scale: [1, 1], //scale to apply before draw the point
+      bounds: undefined,
+      localRS: false, //if points are stored within a local (tile) reference system
+      origin: [0, 0], //points offset
+      offset: [0, 0], //tiles offset
+      delimiter: "", // auto-detect
+      newline: "", // auto-detect
+      quoteChar: '"',
+      encoding: "",
+      radius: 1,
+      color: 'blue',
+      fillColor: 'blue',
+      weight: 1,
+      fillOpacity: 0.3,
+      opacity: 1,
+      minZoom: 0, //autodetect
+      grid: true
+    },
+    view: {
+      row: null,
+      col: null
+    },
+    _url: '',
 
-      initialize: function(url, options) {
-        L.Util.setOptions(this, options);
-        this._url = url;
-        if (this.options.bounds) {
+    initialize: function(url, options) {
+      L.Util.setOptions(this, options);
+      this._url = url;
+      if (!Array.isArray(this.options.size)) {
+        this.options.size = [this.options.size, this.options.size];
+      }
+      if (!Array.isArray(this.options.tileSize)) {
+        this.options.tileSize = [this.options.tileSize, this.options.tileSize];
+      }
+      if (Array.isArray(this.options.bounds)) {
+        this.options.bounds = L.latLngBounds(this.options.bounds);
+      }
+      if (this.options.bounds && this.options.bounds.isValid()) {
 
-        }
-        if (!Array.isArray(this.options.scale)) {
-          this.options.scale = [this.options.scale, this.options.scale];
-        }
-        if (!Array.isArray(this.options.size)) {
-          this.options.size = [this.options.size, this.options.size];
-        }
-        if (!Array.isArray(this.options.tileSize)) {
-          this.options.tileSize = [this.options.tileSize, this.options.tileSize];
-        }
-        this._group = L.featureGroup();
-        if (this.options.grid) {
-          this._grid = L.featureGroup();
-          let scaleX = this.options.scale[0];
-          let scaleY = this.options.scale[1];
-          for (var x = 0; x < this.options.size[0]; x = x + this.options.tileSize[0]) {
-            for (var y = 0; y < this.options.size[1]; y = y + this.options.tileSize[1]) {
-              let m = L.rectangle([[y * scaleY, x * scaleX], [(y + this.options.tileSize[1]) * scaleY, (x + this.options.tileSize[0]) * scaleX] ],
-                {
-                  color: this.options.color,
-                  fillColor: this.options.color,
-                  opacity: 0.5,
-                  fillOpacity: 0,
-                  weight: 1
-                });
+        this.options.scale = [(this.options.bounds.getEast() - this.options.bounds.getWest()) / this.options.size[0], (this.options.bounds.getSouth() - this.options.bounds.getNorth()) / this.options.size[1]];
+      }
+      if (!Array.isArray(this.options.scale)) {
+        this.options.scale = [this.options.scale, this.options.scale];
+      }
+      this._group = L.featureGroup();
+      if (this.options.grid) {
+        this._grid = L.featureGroup();
+        let scaleX = this.options.scale[0];
+        let scaleY = this.options.scale[1];
+        for (var x = 0; x < this.options.size[0]; x = x + this.options.tileSize[0]) {
+          for (var y = 0; y < this.options.size[1]; y = y + this.options.tileSize[1]) {
+            let m = L.rectangle([
+              [y * scaleY, x * scaleX],
+              [(y + this.options.tileSize[1]) * scaleY, (x + this.options.tileSize[0]) * scaleX]
+            ], {
+              color: this.options.color,
+              fillColor: this.options.color,
+              opacity: 0.5,
+              fillOpacity: 0,
+              weight: 1
+            });
             this._grid.addLayer(m);
           }
         }
@@ -203,7 +215,7 @@ if (L != undefined && Papa != undefined) {
           newline: this.options.newline,
           encoding: this.options.encoding,
           step: (results, parser) => {
-            this._addPoints([results.data[0][0] + reference.x, results.data[0][1] + reference.y]);
+            this._addPoints([results.data[0][this.options.columns.lng] + reference.x, results.data[0][this.options.columns.lat] + reference.y]);
           },
           complete: (results, file) => {},
           error: (e, file) => {
@@ -226,7 +238,7 @@ if (L != undefined && Papa != undefined) {
               delimiter: this.options.delimeter,
               newline: this.options.newline,
               step: (results, parser) => {
-                this._addPoints([results.data[0][0] + reference.x, results.data[0][1] + reference.y]);
+                this._addPoints([results.data[0][this.options.columns.lng] + reference.x, results.data[0][this.options.columns.lat] + reference.y]);
               },
               complete: (results, file) => {},
               error: (e, file) => {
@@ -244,7 +256,7 @@ if (L != undefined && Papa != undefined) {
     _addPoints: function(point) {
       let scaleX = this.options.scale[0];
       let scaleY = this.options.scale[1];
-      if (!(point[0] == NaN) && !(point[1] == NaN)) {
+      if (!(isNaN(point[0])) && !(isNaN(point[1]))) {
         this._group.addLayer(L.circleMarker([point[1] * scaleY, point[0] * scaleX], {
           radius: this.options.radius,
           color: this.options.color,
@@ -257,7 +269,7 @@ if (L != undefined && Papa != undefined) {
     }
   });
 
-L.csvTiles = function(url, options) {
-  return new L.CsvTiles(url, options);
-};
+  L.csvTiles = function(url, options) {
+    return new L.CsvTiles(url, options);
+  };
 }

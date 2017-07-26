@@ -76,14 +76,18 @@ if (L != undefined && Papa != undefined) {
         this._grid = L.featureGroup();
         let scaleX = this.options.scale[0];
         let scaleY = this.options.scale[1];
-        let b = L.latLngBounds(this.options.bounds);
-        let x0 = b.getWest();
-        let y0 = b.getNorth();
+        let x0 = 0;
+        let y0 = 0;
+        if (this.options.bounds) {
+          let b = L.latLngBounds(this.options.bounds);
+          x0 = b.getWest();
+          y0 = b.getNorth();
+        }
         for (var x = 0; x < this.options.size[0]; x = x + this.options.tileSize[0]) {
           for (var y = 0; y < this.options.size[1]; y = y + this.options.tileSize[1]) {
             let m = L.rectangle([
-              [y0+y * scaleY, x0+x * scaleX],
-              [y0+(y + this.options.tileSize[1]) * scaleY, x0+(x + this.options.tileSize[0]) * scaleX]
+              [y0 + y * scaleY, x0 + x * scaleX],
+              [y0 + (y + this.options.tileSize[1]) * scaleY, x0 + (x + this.options.tileSize[0]) * scaleX]
             ], {
               color: this.options.color,
               fillColor: this.options.color,

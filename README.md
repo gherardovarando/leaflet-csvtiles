@@ -4,11 +4,11 @@
 
 
 #### L.CRS.Simple [demo](https://gherardovarando.github.io/leaflet-csvtiles/demo/index.html)
-#### L.CRS.EPSG3857 [demo](https://gherardovarando.github.io/leaflet-csvtiles/demo/index2.html)
+#### L.CRS.EPSG3857 [demo](https://gherardovarando.github.io/leaflet-csvtiles/demo/index2.html) (points have no meaning herer)
 
 leaflet-csvtiles is a leaflet plugin that load points from tiled csv files, using the amazing [PapaParse](http://papaparse.com/) library.
 
-** Currently the use of this plugin with CRS different than Simple is experimental**
+** This plugin was developed mainly for application with Simple CRS, with different CRS the tiles will always be uniformly spaced in lat and lng (so not uniformly spaced in the map see the demo for the problem visualization)**
 
 ## API
 
@@ -22,10 +22,13 @@ leaflet-csvtiles is a leaflet plugin that load points from tiled csv files, usin
 #### Options
 
 The option that can be passed on creation
+- ``columns`` Object:
+  - ``lat`` Integer index of the column that stores the lat in the csv.
+  - ``lng`` Integer index of the column that stores the lng in the csv.
 - ``size`` Number or Number[] size of the space covered by the csvTiles.
 - ``tileSize`` Number or Number[] size of one tile (same unit as ``size``).
 - ``scale`` Number or Number[], scale to apply to the points coordinates.
-- ``bounds`` LatLngBounds, (in map coordinates) if not scale is provided and ``bounds`` are present the ``scale`` parameter will be computed to fit the points into the given ``bounds``.
+- ``bounds`` LatLngBounds, (in map coordinates) if  provided the ``scale`` parameter will be computed to fit the points into the given ``bounds``.
 - ``localRS `` boolean, if points are given in local (tile) coordinates in each tile.
 - ``origin`` offset of the points coordinates
 - ``offset`` offset of the tile indexes.

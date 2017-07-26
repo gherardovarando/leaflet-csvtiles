@@ -25,9 +25,13 @@ if (L != undefined && Papa != undefined) {
 
   L.CsvTiles = L.FeatureGroup.extend({
     options: {
+      columns: {
+        lat: 0,
+        lng: 1
+      },
       tileSize: 256,
       size: 256,
-      scale: 1, //scale to apply before draw the point
+      scale: [1, 1], //scale to apply before draw the point
       bounds: undefined,
       localRS: false, //if points are stored within a local (tile) reference system
       origin: [0, 0], //points offset
@@ -49,19 +53,26 @@ if (L != undefined && Papa != undefined) {
       row: null,
       col: null
     },
-    url: '',
+    _url: '',
 
     initialize: function(url, options) {
       L.Util.setOptions(this, options);
       this._url = url;
-      if (!Array.isArray(this.options.scale)) {
-        this.options.scale = [this.options.scale, this.options.scale];
-      }
       if (!Array.isArray(this.options.size)) {
         this.options.size = [this.options.size, this.options.size];
       }
       if (!Array.isArray(this.options.tileSize)) {
         this.options.tileSize = [this.options.tileSize, this.options.tileSize];
+      }
+      if (Array.isArray(this.options.bounds)) {
+        this.options.bounds = L.latLngBounds(this.options.bounds);
+      }
+      if (this.options.bounds && this.options.bounds.isValid()) {
+
+        this.options.scale = [(this.options.bounds.getEast() - this.options.bounds.getWest()) / this.options.size[0], (this.options.bounds.getSouth() - this.options.bounds.getNorth()) / this.options.size[1]];
+      }
+      if (!Array.isArray(this.options.scale)) {
+        this.options.scale = [this.options.scale, this.options.scale];
       }
       this._group = L.featureGroup();
       if (this.options.grid) {
@@ -204,7 +215,7 @@ if (L != undefined && Papa != undefined) {
           newline: this.options.newline,
           encoding: this.options.encoding,
           step: (results, parser) => {
-            this._addPoints([results.data[0][0] + reference.x, results.data[0][1] + reference.y]);
+            this._addPoints([results.data[0][this.options.columns.lng] + reference.x, results.data[0][this.options.columns.lat] + reference.y]);
           },
           complete: (results, file) => {},
           error: (e, file) => {
@@ -227,7 +238,7 @@ if (L != undefined && Papa != undefined) {
               delimiter: this.options.delimeter,
               newline: this.options.newline,
               step: (results, parser) => {
-                this._addPoints([results.data[0][0] + reference.x, results.data[0][1] + reference.y]);
+                this._addPoints([results.data[0][this.options.columns.lng] + reference.x, results.data[0][this.options.columns.lat] + reference.y]);
               },
               complete: (results, file) => {},
               error: (e, file) => {
@@ -245,7 +256,7 @@ if (L != undefined && Papa != undefined) {
     _addPoints: function(point) {
       let scaleX = this.options.scale[0];
       let scaleY = this.options.scale[1];
-      if (!(point[0] == NaN) && !(point[1] == NaN)) {
+      if (!(isNaN(point[0])) && !(isNaN(point[1]))) {
         this._group.addLayer(L.circleMarker([point[1] * scaleY, point[0] * scaleX], {
           radius: this.options.radius,
           color: this.options.color,

@@ -30,7 +30,7 @@ if (L != undefined && Papa != undefined) {
         y: 1,
         z: undefined
       },
-      typeOfPoint: 'circleMarker', //change with the function
+      typeOfPoint: 'circleMarker', //change with the function and change leaflet-map-builder accordingly
       tileSize: 256,
       size: 256,
       scale: [1, 1, 1], //scale to apply before draw the point

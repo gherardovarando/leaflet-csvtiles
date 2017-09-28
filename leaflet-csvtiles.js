@@ -27,11 +27,13 @@ if (L != undefined && Papa != undefined) {
     options: {
       columns: {
         x: 0,
-        y: 1
+        y: 1,
+        z: undefined
       },
+      typeOfPoint: 'circleMarker', //change with the function and change leaflet-map-builder accordingly
       tileSize: 256,
       size: 256,
-      scale: [1, 1], //scale to apply before draw the point
+      scale: [1, 1, 1], //scale to apply before draw the point
       bounds: undefined,
       localRS: false, //if points are stored within a local (tile) reference system
       offset: [0, 0], //tiles offset
@@ -54,24 +56,47 @@ if (L != undefined && Papa != undefined) {
     },
     _origin: [0, 0],
     _url: '',
+    _multislice: false,
 
     initialize: function(url, options) {
       L.Util.setOptions(this, options);
       this._url = url;
+      if (typeof this.options.columns.z != 'undefined' && L.MultiSliceHandler) {
+        this._multislice = true;
+      }
+
+      if (typeof this.options.typeOfPoint === 'string') {
+        switch (this.options.typeOfPoint) {
+          case "circleMarker":
+            this._pointFunction = L.circleMarker;
+            break;
+          case 'marker':
+            this._pointFunction = L.marker;
+            console.log('circle');
+            break;
+          case 'circle':
+            this._pointFunction = L.circle;
+            break;
+          default:
+            console.log('default');
+            this._pointFunction = L.circleMarker;
+        }
+      }
+
       if (!Array.isArray(this.options.size)) {
-        this.options.size = [this.options.size, this.options.size];
+        this.options.size = [this.options.size, this.options.size, this.options.size];
       }
       if (!Array.isArray(this.options.tileSize)) {
-        this.options.tileSize = [this.options.tileSize, this.options.tileSize];
+        this.options.tileSize = [this.options.tileSize, this.options.tileSize, this.options.tileSize];
       }
       if (this.options.bounds) {
         this._bounds = L.latLngBounds(this.options.bounds);
-        this.options.scale = [(this._bounds.getEast() - this._bounds.getWest()) / this.options.size[0], (this._bounds.getSouth() - this._bounds.getNorth()) / this.options.size[1]];
+        this.options.scale = [(this._bounds.getEast() - this._bounds.getWest()) / this.options.size[0], (this._bounds.getSouth() - this._bounds.getNorth()) / this.options.size[1], (Array.isArray(this.options.scale) ? this.options.scale[2] : this.options.scale)];
         this._origin[0] = this._bounds.getWest();
         this._origin[1] = this._bounds.getNorth();
       }
       if (!Array.isArray(this.options.scale)) {
-        this.options.scale = [this.options.scale, this.options.scale];
+        this.options.scale = [this.options.scale, this.options.scale, this.options.scale];
       }
       this._group = L.featureGroup();
       if (this.options.grid) {
@@ -222,7 +247,7 @@ if (L != undefined && Papa != undefined) {
           newline: this.options.newline,
           encoding: this.options.encoding,
           step: (results, parser) => {
-            this._addPoints([results.data[0][this.options.columns.x] + reference.x, results.data[0][this.options.columns.y] + reference.y]);
+            this._addPoints([results.data[0][this.options.columns.x] + reference.x, results.data[0][this.options.columns.y] + reference.y, results.data[0][this.options.columns.z]]);
           },
           complete: (results, file) => {},
           error: (e, file) => {
@@ -245,7 +270,7 @@ if (L != undefined && Papa != undefined) {
               delimiter: this.options.delimeter,
               newline: this.options.newline,
               step: (results, parser) => {
-                this._addPoints([results.data[0][this.options.columns.x] + reference.x, results.data[0][this.options.columns.y] + reference.y]);
+                this._addPoints([results.data[0][this.options.columns.x] + reference.x, results.data[0][this.options.columns.y] + reference.y, results.data[0][this.options.columns.z]]);
               },
               complete: (results, file) => {},
               error: (e, file) => {
@@ -264,7 +289,7 @@ if (L != undefined && Papa != undefined) {
       let scaleX = this.options.scale[0];
       let scaleY = this.options.scale[1];
       if (!(isNaN(point[0])) && !(isNaN(point[1]))) {
-        this._group.addLayer(L.circleMarker([this._origin[1] + point[1] * scaleY, this._origin[0] + point[0] * scaleX], {
+        this._group.addLayer(this._pointFunction([this._origin[1] + point[1] * scaleY, this._origin[0] + point[0] * scaleX], {
           radius: this.options.radius,
           color: this.options.color,
           fillColor: this.options.fillColor,

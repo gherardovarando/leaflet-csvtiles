@@ -23,19 +23,21 @@ leaflet-csvtiles is a leaflet plugin that load points from tiled csv files, usin
 
 The option that can be passed on creation
 - ``columns`` Object:
-  - ``lat`` Integer index of the column that stores the lat in the csv.
-  - ``lng`` Integer index of the column that stores the lng in the csv.
+  - ``x`` Integer index of the column that stores the x coordinates in the csv, default to ``0``. (x coordinates will be mapped to lng)
+  - ``y`` Integer index of the column that stores the y coordinates in the csv, default to ``1``. (y coordinates will be mapped to lat).
+  - ``z`` Integer index of the column that stores the z coordinates (levels/slice/elevation) in the csv, default to ``undefined``. If set to a a positive integer and the Multi Level handler is enabled the points will be displayed only in the appropriate level.
 - ``size`` Number or Number[] size of the space covered by the csvTiles.
 - ``tileSize`` Number or Number[] size of one tile (same unit as ``size``).
 - ``scale`` Number or Number[], scale to apply to the points coordinates.
 - ``bounds`` LatLngBounds, (in map coordinates) if  provided the ``scale`` parameter will be computed to fit the points into the given ``bounds``.
-- ``localRS `` boolean, if points are given in local (tile) coordinates in each tile.
-- ``origin`` offset of the points coordinates
+- ``localRS `` boolean, if points are given in local (tile) coordinates in each tile, that is if true it means that in every tile the points coordinates range between (0,0) to tileSize.
+- ``origin`` offset of the points coordinates, will be computed automatically if ``bounds`` is set.
 - ``offset`` offset of the tile indexes.
-- ``minZoom``
+- ``minZoom`` min zoom at which the layer is shown.
 - ``grid`` if a grid showing tiles borders should be plotted.
+- ``typeOfPoint`` String one of ``circleMarker``(default), ``marker``, ``circle``.
 
-the following fields are relative to circleMarker options:
+the following fields are relative to the appropriate type of points used:
 - ``radius``
 - ``color``
 - ``fillColor``

@@ -56,13 +56,13 @@ if (L != undefined && Papa != undefined) {
     },
     _origin: [0, 0],
     _url: '',
-    _multislice: false,
+    _multilevel: false,
 
     initialize: function(url, options) {
       L.Util.setOptions(this, options);
       this._url = url;
-      if (typeof this.options.columns.z != 'undefined' && L.MultiSliceHandler) {
-        this._multislice = true;
+      if (typeof this.options.columns.z != 'undefined' && L.MultiLevelHandler) {
+        this._multilevel = true;
       }
 
       if (typeof this.options.typeOfPoint === 'string') {
@@ -132,6 +132,11 @@ if (L != undefined && Papa != undefined) {
 
     onAdd: function(map) {
       this._map = map;
+      if (this._multilevel) {
+        if (!(this._map.options.multilevel && (typeof this._map.getLevel === 'function'))) {
+          this._multilevel = false; //force to no multilevel if the map is not in multilevel mode
+        }
+      }
       if (this._map.getZoom() >= this.options.minZoom) {
         if (this.options.grid) {
           this._map.addLayer(this._grid);
@@ -172,6 +177,7 @@ if (L != undefined && Papa != undefined) {
       if (this._map instanceof L.Map) {
         this._map.on('zoomend', this._zoomEnd, this);
         this._map.on('moveend', this._refreshView, this);
+        this._map.on('levelchange', this._refreshView, this);
       }
     },
 
@@ -192,6 +198,7 @@ if (L != undefined && Papa != undefined) {
     _unbindEvents: function() {
       this._map.off('moveend', this._refreshView, this);
       this._map.off('zoomend', this._zoomEnd, this);
+      this._map.off('levelchange', this._refreshView, this);
     },
 
     //bounds are latlangbounds

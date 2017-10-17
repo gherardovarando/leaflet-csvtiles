@@ -72,13 +72,11 @@ if (L != undefined && Papa != undefined) {
             break;
           case 'marker':
             this._pointFunction = L.marker;
-            console.log('circle');
             break;
           case 'circle':
             this._pointFunction = L.circle;
             break;
           default:
-            console.log('default');
             this._pointFunction = L.circleMarker;
         }
       }
@@ -161,6 +159,9 @@ if (L != undefined && Papa != undefined) {
       let zoom = this._map.getZoom();
       let bounds = this._map.getBounds();
       let center = this._map.getCenter();
+      if (this._bounds) {
+        if (!this._bounds.contains(center)) return;
+      }
       if (zoom < this.options.minZoom) return;
       let references = this._getReferences(L.latLngBounds([center]));
       if (!references || !references[0]) return;
@@ -295,14 +296,20 @@ if (L != undefined && Papa != undefined) {
     _addPoints: function(point) {
       let scaleX = this.options.scale[0];
       let scaleY = this.options.scale[1];
+      let f = this._pointFunction;
+      if (this._multilevel && (typeof f.ml === 'function')) {
+        f = f.ml;
+      }
       if (!(isNaN(point[0])) && !(isNaN(point[1]))) {
-        this._group.addLayer(this._pointFunction([this._origin[1] + point[1] * scaleY, this._origin[0] + point[0] * scaleX], {
+        this._group.addLayer(f([this._origin[1] + point[1] * scaleY, this._origin[0] + point[0] * scaleX], {
           radius: this.options.radius,
           color: this.options.color,
           fillColor: this.options.fillColor,
           weight: this.options.weight,
           opacity: this.options.opacity,
-          fillOpacity: this.options.fillOpacity
+          fillOpacity: this.options.fillOpacity,
+          minLevel: Math.floor(point[2]),
+          maxLevel: Math.floor(point[2])
         }));
       }
     }

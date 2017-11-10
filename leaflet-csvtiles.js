@@ -262,7 +262,7 @@ if (L != undefined && Papa != undefined) {
             throw e;
           }
         });
-      } else if (url.startsWith('file') || url.startsWith('/')) {
+      } else {
         //we are in node, for example electron app
         try {
           const fs = require('fs');
@@ -287,9 +287,6 @@ if (L != undefined && Papa != undefined) {
             });
           });
         }
-      } else {
-        console.log(url);
-        throw 'Error: cant read local file if not in Node.js'
       }
     },
 

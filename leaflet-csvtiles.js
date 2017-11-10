@@ -246,7 +246,7 @@ if (L != undefined && Papa != undefined) {
       let url = this._url;
       url = url.replace("{x}", reference.col);
       url = url.replace("{y}", reference.row);
-      if (url.startsWith('http') || (typeof module == 'undefined' || !module.exports)) {
+      if (url.startsWith('http://') || url.startsWith('file://') || url.startsWith('https://') || (typeof module == 'undefined' || !module.exports)) {
         Papa.parse(url, {
           dynamicTyping: true,
           fastMode: true,

@@ -215,7 +215,7 @@ if (L != undefined && Papa != undefined) {
       let scaleX = this.options.scale[0];
       let scaleY = this.options.scale[1];
       let offset = this.options.offset;
-      let s = 1;
+      let s = [1,1];
       if (bounds) {
         var temp = [];
         var xstart = Math.floor((bounds.getWest() - this._origin[0]) / (tileSize[0] * scaleX));

@@ -20,6 +20,11 @@
 'use strict';
 
 // leaflet and PapaParse required
+//
+//
+
+
+
 
 if (L != undefined && Papa != undefined) {
 
@@ -163,12 +168,14 @@ if (L != undefined && Papa != undefined) {
         if (!this._bounds.contains(center)) return;
       }
       if (zoom < this.options.minZoom) return;
-      let references = this._getReferences(L.latLngBounds([center]));
+      let references = this.getReferences(L.latLngBounds([center]));
       if (!references || !references[0]) return;
       if (this.view.row == references[0].row && this.view.col == references[0].col) return;
       this._group.clearLayers();
       this.view = references[0];
-      this._read(this.view);
+      this.read(this.view, (point) => {
+        this._addPoints(point)
+      });
       // references.splice(0, 1).map((ref) => {
       //     this._read(ref);
       // })
@@ -203,7 +210,7 @@ if (L != undefined && Papa != undefined) {
     },
 
     //bounds are latlangbounds
-    _getReferences: function(bounds) {
+    getReferences: function(bounds) {
       let tileSize = this.options.tileSize;
       let scaleX = this.options.scale[0];
       let scaleY = this.options.scale[1];
@@ -242,7 +249,7 @@ if (L != undefined && Papa != undefined) {
       }
     },
 
-    _read: function(reference) {
+    read: function(reference, cl) {
       let url = this._url;
       url = url.replace("{x}", reference.col);
       url = url.replace("{y}", reference.row);
@@ -255,7 +262,7 @@ if (L != undefined && Papa != undefined) {
           newline: this.options.newline,
           encoding: this.options.encoding,
           step: (results, parser) => {
-            this._addPoints([results.data[0][this.options.columns.x] + reference.x, results.data[0][this.options.columns.y] + reference.y, results.data[0][this.options.columns.z]]);
+            if (typeof cl === 'function') cl([results.data[0][this.options.columns.x] + reference.x, results.data[0][this.options.columns.y] + reference.y, results.data[0][this.options.columns.z]]);
           },
           complete: (results, file) => {},
           error: (e, file) => {

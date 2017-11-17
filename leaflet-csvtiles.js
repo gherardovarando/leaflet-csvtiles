@@ -273,7 +273,7 @@ if (L != undefined && Papa != undefined) {
           encoding: this.options.encoding,
           step: step,
           complete: (results, file) => {
-            if (typeof complete === 'function') compelete()
+            if (typeof complete === 'function') complete()
           },
           error: (e, file) => {
             if (typeof error === 'function') error(e, file)

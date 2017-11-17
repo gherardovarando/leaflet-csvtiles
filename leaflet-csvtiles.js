@@ -277,7 +277,7 @@ if (L != undefined && Papa != undefined) {
             if (typeof complete === 'function') compelete()
           },
           error: (e, file) => {
-            if (typeof error = 'function') error(e, file)
+            if (typeof error === 'function') error(e, file)
           }
         });
       } else {
@@ -300,7 +300,7 @@ if (L != undefined && Papa != undefined) {
                 if (typeof complete === 'function') compelete()
               },
               error: (e, file) => {
-                if (typeof error = 'function') error(e, file)
+                if (typeof error === 'function') error(e, file)
               }
             });
           });

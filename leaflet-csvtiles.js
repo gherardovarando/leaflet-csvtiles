@@ -215,7 +215,7 @@ if (L != undefined && Papa != undefined) {
       let scaleX = this.options.scale[0];
       let scaleY = this.options.scale[1];
       let offset = this.options.offset;
-      let s = [1,1];
+      let s = [1, 1];
       if (bounds) {
         var temp = [];
         var xstart = Math.floor((bounds.getWest() - this._origin[0]) / (tileSize[0] * scaleX));
@@ -249,10 +249,21 @@ if (L != undefined && Papa != undefined) {
       }
     },
 
-    read: function(reference, cl) {
+    read: function(reference, cl, complete, error) {
+      let scaleX = this.options.scale[0];
+      let scaleY = this.options.scale[1];
       let url = this._url;
       url = url.replace("{x}", reference.col);
       url = url.replace("{y}", reference.row);
+      let step = (results, parser) => {
+        [this._origin[1] + point[1] * scaleY, this._origin[0] + point[0] * scaleX]
+        let point = {
+          lat: this._origin[0] + scaleY * (results.data[0][this.options.columns.y] + reference.y),
+          lng: this._origin[1] + scaleX * (results.data[0][this.options.columns.x] + reference.x),
+          level: results.data[0][this.options.columns.z]
+        }
+        if (typeof cl === 'function') cl(point);
+      }
       if (url.startsWith('http://') || url.startsWith('file://') || url.startsWith('https://') || (typeof module == 'undefined' || !module.exports)) {
         Papa.parse(url, {
           dynamicTyping: true,
@@ -261,12 +272,12 @@ if (L != undefined && Papa != undefined) {
           delimiter: this.options.delimeter,
           newline: this.options.newline,
           encoding: this.options.encoding,
-          step: (results, parser) => {
-            if (typeof cl === 'function') cl([results.data[0][this.options.columns.x] + reference.x, results.data[0][this.options.columns.y] + reference.y, results.data[0][this.options.columns.z]]);
+          step: step,
+          complete: (results, file) => {
+            if (typeof complete === 'function') compelete()
           },
-          complete: (results, file) => {},
           error: (e, file) => {
-            throw e;
+            if (typeof error = 'function') error(e, file)
           }
         });
       } else {
@@ -284,12 +295,12 @@ if (L != undefined && Papa != undefined) {
               download: false,
               delimiter: this.options.delimeter,
               newline: this.options.newline,
-              step: (results, parser) => {
-                this._addPoints([results.data[0][this.options.columns.x] + reference.x, results.data[0][this.options.columns.y] + reference.y, results.data[0][this.options.columns.z]]);
+              step: step,
+              complete: (results, file) => {
+                if (typeof complete === 'function') compelete()
               },
-              complete: (results, file) => {},
               error: (e, file) => {
-                throw e;
+                if (typeof error = 'function') error(e, file)
               }
             });
           });
@@ -298,22 +309,21 @@ if (L != undefined && Papa != undefined) {
     },
 
     _addPoints: function(point) {
-      let scaleX = this.options.scale[0];
-      let scaleY = this.options.scale[1];
+
       let f = this._pointFunction;
       if (this._multilevel && (typeof f.ml === 'function')) {
         f = f.ml;
       }
       if (!(isNaN(point[0])) && !(isNaN(point[1]))) {
-        this._group.addLayer(f([this._origin[1] + point[1] * scaleY, this._origin[0] + point[0] * scaleX], {
+        this._group.addLayer(f(point, {
           radius: this.options.radius,
           color: this.options.color,
           fillColor: this.options.fillColor,
           weight: this.options.weight,
           opacity: this.options.opacity,
           fillOpacity: this.options.fillOpacity,
-          minLevel: Math.floor(point[2]),
-          maxLevel: Math.floor(point[2])
+          minLevel: Math.floor(point.level),
+          maxLevel: Math.floor(point.level)
         }));
       }
     }

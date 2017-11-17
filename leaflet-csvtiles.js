@@ -256,7 +256,6 @@ if (L != undefined && Papa != undefined) {
       url = url.replace("{x}", reference.col);
       url = url.replace("{y}", reference.row);
       let step = (results, parser) => {
-        [this._origin[1] + point[1] * scaleY, this._origin[0] + point[0] * scaleX]
         let point = {
           lat: this._origin[0] + scaleY * (results.data[0][this.options.columns.y] + reference.y),
           lng: this._origin[1] + scaleX * (results.data[0][this.options.columns.x] + reference.x),
@@ -314,7 +313,7 @@ if (L != undefined && Papa != undefined) {
       if (this._multilevel && (typeof f.ml === 'function')) {
         f = f.ml;
       }
-      if (!(isNaN(point[0])) && !(isNaN(point[1]))) {
+      if (!(isNaN(point.lat)) && !(isNaN(point.lng))) {
         this._group.addLayer(f(point, {
           radius: this.options.radius,
           color: this.options.color,

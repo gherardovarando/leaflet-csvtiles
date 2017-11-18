@@ -292,7 +292,7 @@ if (L != undefined && Papa != undefined) {
               worker: useworker,
               step: step,
               complete: (results, file) => {
-                if (typeof complete === 'function') compelete()
+                if (typeof complete === 'function') complete()
               },
               error: (e, file) => {
                 if (typeof error === 'function') error(e, file)

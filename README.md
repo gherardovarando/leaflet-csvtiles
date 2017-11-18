@@ -54,6 +54,7 @@ the following fields are as in the PapaParse configuration:
 - `newline`
 - `quoteChar`
 - `encoding`
+- `worker` 
 
 #### Methods
 

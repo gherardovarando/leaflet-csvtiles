@@ -20,12 +20,6 @@
 'use strict';
 
 // leaflet and PapaParse required
-//
-//
-
-
-
-
 if (L != undefined && Papa != undefined) {
 
   L.CsvTiles = L.FeatureGroup.extend({
@@ -271,6 +265,7 @@ if (L != undefined && Papa != undefined) {
           delimiter: this.options.delimeter,
           newline: this.options.newline,
           encoding: this.options.encoding,
+          worker: this.options.worker,
           step: step,
           complete: (results, file) => {
             if (typeof complete === 'function') complete()
@@ -294,6 +289,7 @@ if (L != undefined && Papa != undefined) {
               download: false,
               delimiter: this.options.delimeter,
               newline: this.options.newline,
+              worker: this.options.worker,
               step: step,
               complete: (results, file) => {
                 if (typeof complete === 'function') compelete()

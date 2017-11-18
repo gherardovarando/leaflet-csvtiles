@@ -1,6 +1,6 @@
 {
   "name": "leaflet-csvtiles",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "leaflet layers to display points stored in csv tiles ",
   "main": "leaflet-csvtiles.js",
   "scripts": {

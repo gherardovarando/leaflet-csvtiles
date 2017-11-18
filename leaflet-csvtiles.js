@@ -243,7 +243,7 @@ if (L != undefined && Papa != undefined) {
       }
     },
 
-    read: function(reference, cl, complete, error) {
+    read: function(reference, cl, complete, error, useworker) {
       let scaleX = this.options.scale[0];
       let scaleY = this.options.scale[1];
       let url = this._url;
@@ -265,7 +265,7 @@ if (L != undefined && Papa != undefined) {
           delimiter: this.options.delimeter,
           newline: this.options.newline,
           encoding: this.options.encoding,
-          worker: this.options.worker,
+          worker: useworker,
           step: step,
           complete: (results, file) => {
             if (typeof complete === 'function') complete()
@@ -289,7 +289,7 @@ if (L != undefined && Papa != undefined) {
               download: false,
               delimiter: this.options.delimeter,
               newline: this.options.newline,
-              worker: this.options.worker,
+              worker: useworker,
               step: step,
               complete: (results, file) => {
                 if (typeof complete === 'function') compelete()

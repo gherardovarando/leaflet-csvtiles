@@ -283,7 +283,7 @@ if (L != undefined && Papa != undefined) {
         } finally {
           require('fs').readFile(url, this.options.encoding || 'utf8', (err, data) => {
             if (err) { //to handle file not find case
-              if (typeof error === 'function') error(e, file)
+              if (typeof error === 'function') error(err, url)
             }
             Papa.parse(data, {
               dynamicTyping: true,

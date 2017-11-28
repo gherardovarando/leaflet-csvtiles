@@ -18,7 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 'use strict';
-// leaflet and PapaParse required
+// leaflet required
 if (L != undefined) {
 
   L.CsvTiles = L.FeatureGroup.extend({
@@ -55,7 +55,7 @@ if (L != undefined) {
     _origin: [0, 0],
     _url: '',
     _multilevel: false,
-    _parser = Papa.parse,
+    _parser : Papa.parse,
 
     initialize: function(url, options, parser) {
       L.Util.setOptions(this, options);
@@ -172,9 +172,6 @@ if (L != undefined) {
       this.read(this.view, (point) => {
         this._addPoints(point)
       });
-      // references.splice(0, 1).map((ref) => {
-      //     this._read(ref);
-      // })
     },
 
     _bindEvents: function() {

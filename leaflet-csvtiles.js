@@ -55,7 +55,6 @@ if (L != undefined) {
     _origin: [0, 0],
     _url: '',
     _multilevel: false,
-    _parser : Papa.parse,
 
     initialize: function(url, options, parser) {
       L.Util.setOptions(this, options);
@@ -64,7 +63,11 @@ if (L != undefined) {
         this._multilevel = true;
       }
 
-      if (typeof parser === 'function') this._parser = parser;
+      if (typeof parser === 'function') {
+        this._parser = parser;
+      } else if (Papa && Papa.parse) {
+        this._parser = Papa.parse;
+      }
 
       if (typeof this.options.typeOfPoint === 'string') {
         switch (this.options.typeOfPoint) {

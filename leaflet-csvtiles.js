@@ -18,10 +18,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 'use strict';
-
-// leaflet and PapaParse required
-
-if (L != undefined && Papa != undefined) {
+// leaflet required
+if (L != undefined) {
 
   L.CsvTiles = L.FeatureGroup.extend({
     options: {
@@ -56,14 +54,17 @@ if (L != undefined && Papa != undefined) {
     },
     _origin: [0, 0],
     _url: '',
-    _multislice: false,
+    _multilevel: false,
+    _parser : Papa.parse,
 
-    initialize: function(url, options) {
+    initialize: function(url, options, parser) {
       L.Util.setOptions(this, options);
       this._url = url;
-      if (typeof this.options.columns.z != 'undefined' && L.MultiSliceHandler) {
-        this._multislice = true;
+      if (typeof this.options.columns.z != 'undefined' && L.MultiLevelHandler) {
+        this._multilevel = true;
       }
+
+      if (typeof parser === 'function') this._parser = parser;
 
       if (typeof this.options.typeOfPoint === 'string') {
         switch (this.options.typeOfPoint) {
@@ -72,13 +73,11 @@ if (L != undefined && Papa != undefined) {
             break;
           case 'marker':
             this._pointFunction = L.marker;
-            console.log('circle');
             break;
           case 'circle':
             this._pointFunction = L.circle;
             break;
           default:
-            console.log('default');
             this._pointFunction = L.circleMarker;
         }
       }
@@ -132,6 +131,11 @@ if (L != undefined && Papa != undefined) {
 
     onAdd: function(map) {
       this._map = map;
+      if (this._multilevel) {
+        if (!(this._map.options.multilevel && (typeof this._map.getLevel === 'function'))) {
+          this._multilevel = false; //force to no multilevel if the map is not in multilevel mode
+        }
+      }
       if (this._map.getZoom() >= this.options.minZoom) {
         if (this.options.grid) {
           this._map.addLayer(this._grid);
@@ -156,22 +160,25 @@ if (L != undefined && Papa != undefined) {
       let zoom = this._map.getZoom();
       let bounds = this._map.getBounds();
       let center = this._map.getCenter();
+      if (this._bounds) {
+        if (!this._bounds.contains(center)) return;
+      }
       if (zoom < this.options.minZoom) return;
-      let references = this._getReferences(L.latLngBounds([center]));
+      let references = this.getReferences(L.latLngBounds([center]));
       if (!references || !references[0]) return;
       if (this.view.row == references[0].row && this.view.col == references[0].col) return;
       this._group.clearLayers();
       this.view = references[0];
-      this._read(this.view);
-      // references.splice(0, 1).map((ref) => {
-      //     this._read(ref);
-      // })
+      this.read(this.view, (point) => {
+        this._addPoints(point)
+      });
     },
 
     _bindEvents: function() {
       if (this._map instanceof L.Map) {
         this._map.on('zoomend', this._zoomEnd, this);
         this._map.on('moveend', this._refreshView, this);
+        this._map.on('levelchange', this._refreshView, this);
       }
     },
 
@@ -192,15 +199,16 @@ if (L != undefined && Papa != undefined) {
     _unbindEvents: function() {
       this._map.off('moveend', this._refreshView, this);
       this._map.off('zoomend', this._zoomEnd, this);
+      this._map.off('levelchange', this._refreshView, this);
     },
 
     //bounds are latlangbounds
-    _getReferences: function(bounds) {
+    getReferences: function(bounds) {
       let tileSize = this.options.tileSize;
       let scaleX = this.options.scale[0];
       let scaleY = this.options.scale[1];
       let offset = this.options.offset;
-      let s = 1;
+      let s = [1, 1];
       if (bounds) {
         var temp = [];
         var xstart = Math.floor((bounds.getWest() - this._origin[0]) / (tileSize[0] * scaleX));
@@ -234,27 +242,39 @@ if (L != undefined && Papa != undefined) {
       }
     },
 
-    _read: function(reference) {
+    read: function(reference, cl, complete, error, useworker) {
+      if (!typeof this._parser === 'function') return;
+      let scaleX = this.options.scale[0];
+      let scaleY = this.options.scale[1];
       let url = this._url;
       url = url.replace("{x}", reference.col);
       url = url.replace("{y}", reference.row);
-      if (url.startsWith('http') || (typeof module == 'undefined' || !module.exports)) {
-        Papa.parse(url, {
+      let step = (results, parser) => {
+        let point = {
+          lat: this._origin[0] + scaleY * (results.data[0][this.options.columns.y] + reference.y),
+          lng: this._origin[1] + scaleX * (results.data[0][this.options.columns.x] + reference.x),
+          level: results.data[0][this.options.columns.z]
+        }
+        if (typeof cl === 'function') cl(point);
+      }
+      if (url.startsWith('http://') || url.startsWith('file://') || url.startsWith('https://') || (typeof module == 'undefined' || !module.exports)) {
+        this._parser(url, {
           dynamicTyping: true,
           fastMode: true,
           download: true,
           delimiter: this.options.delimeter,
           newline: this.options.newline,
           encoding: this.options.encoding,
-          step: (results, parser) => {
-            this._addPoints([results.data[0][this.options.columns.x] + reference.x, results.data[0][this.options.columns.y] + reference.y, results.data[0][this.options.columns.z]]);
+          worker: useworker,
+          step: step,
+          complete: (results, file) => {
+            if (typeof complete === 'function') complete()
           },
-          complete: (results, file) => {},
           error: (e, file) => {
-            throw e;
+            if (typeof error === 'function') error(e, file)
           }
         });
-      } else if (url.startsWith('file') || url.startsWith('/')) {
+      } else {
         //we are in node, for example electron app
         try {
           const fs = require('fs');
@@ -262,40 +282,46 @@ if (L != undefined && Papa != undefined) {
           throw e;
         } finally {
           require('fs').readFile(url, this.options.encoding || 'utf8', (err, data) => {
-            if (err) throw err;
-            Papa.parse(data, {
+            if (err) { //to handle file not find case
+              if (typeof error === 'function') error(err, url)
+              return
+            }
+            this._parser(data, {
               dynamicTyping: true,
               fastMode: true,
               download: false,
               delimiter: this.options.delimeter,
               newline: this.options.newline,
-              step: (results, parser) => {
-                this._addPoints([results.data[0][this.options.columns.x] + reference.x, results.data[0][this.options.columns.y] + reference.y, results.data[0][this.options.columns.z]]);
+              worker: useworker,
+              step: step,
+              complete: (results, file) => {
+                if (typeof complete === 'function') complete()
               },
-              complete: (results, file) => {},
               error: (e, file) => {
-                throw e;
+                if (typeof error === 'function') error(e, file)
               }
             });
           });
         }
-      } else {
-        console.log(url);
-        throw 'Error: cant read local file if not in Node.js'
       }
     },
 
     _addPoints: function(point) {
-      let scaleX = this.options.scale[0];
-      let scaleY = this.options.scale[1];
-      if (!(isNaN(point[0])) && !(isNaN(point[1]))) {
-        this._group.addLayer(this._pointFunction([this._origin[1] + point[1] * scaleY, this._origin[0] + point[0] * scaleX], {
+
+      let f = this._pointFunction;
+      if (this._multilevel && (typeof f.ml === 'function')) {
+        f = f.ml;
+      }
+      if (!(isNaN(point.lat)) && !(isNaN(point.lng))) {
+        this._group.addLayer(f(point, {
           radius: this.options.radius,
           color: this.options.color,
           fillColor: this.options.fillColor,
           weight: this.options.weight,
           opacity: this.options.opacity,
-          fillOpacity: this.options.fillOpacity
+          fillOpacity: this.options.fillOpacity,
+          minLevel: Math.floor(point.level),
+          maxLevel: Math.floor(point.level)
         }));
       }
     }

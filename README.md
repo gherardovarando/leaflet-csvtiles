@@ -12,10 +12,11 @@ leaflet-csvtiles is a leaflet plugin that load points from tiled csv files, usin
 
 ### Creation
 
-#### `L.csvTiles(url, options)`
+#### `L.csvTiles(url, options, parser)`
 
 - `url` url template of the csv tiled files.
 - `options` options object (optional)
+- `parser` Parser function (default to global `Papa.parse`) `function(url || data, config)`.
 
 #### Options
 
@@ -54,7 +55,7 @@ the following fields are as in the PapaParse configuration:
 - `newline`
 - `quoteChar`
 - `encoding`
-- `worker` 
+- `worker`
 
 #### Methods
 

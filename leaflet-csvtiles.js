@@ -18,9 +18,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 'use strict';
-
 // leaflet and PapaParse required
-if (L != undefined && Papa != undefined) {
+if (L != undefined) {
 
   L.CsvTiles = L.FeatureGroup.extend({
     options: {
@@ -56,13 +55,16 @@ if (L != undefined && Papa != undefined) {
     _origin: [0, 0],
     _url: '',
     _multilevel: false,
+    _parser = Papa.parse,
 
-    initialize: function(url, options) {
+    initialize: function(url, options, parser) {
       L.Util.setOptions(this, options);
       this._url = url;
       if (typeof this.options.columns.z != 'undefined' && L.MultiLevelHandler) {
         this._multilevel = true;
       }
+
+      if (typeof parser === 'function') this._parser = parser;
 
       if (typeof this.options.typeOfPoint === 'string') {
         switch (this.options.typeOfPoint) {
@@ -244,6 +246,7 @@ if (L != undefined && Papa != undefined) {
     },
 
     read: function(reference, cl, complete, error, useworker) {
+      if (!typeof this._parser === 'function') return;
       let scaleX = this.options.scale[0];
       let scaleY = this.options.scale[1];
       let url = this._url;
@@ -258,7 +261,7 @@ if (L != undefined && Papa != undefined) {
         if (typeof cl === 'function') cl(point);
       }
       if (url.startsWith('http://') || url.startsWith('file://') || url.startsWith('https://') || (typeof module == 'undefined' || !module.exports)) {
-        Papa.parse(url, {
+        this._parser(url, {
           dynamicTyping: true,
           fastMode: true,
           download: true,
@@ -284,8 +287,9 @@ if (L != undefined && Papa != undefined) {
           require('fs').readFile(url, this.options.encoding || 'utf8', (err, data) => {
             if (err) { //to handle file not find case
               if (typeof error === 'function') error(err, url)
+              return
             }
-            Papa.parse(data, {
+            this._parser(data, {
               dynamicTyping: true,
               fastMode: true,
               download: false,

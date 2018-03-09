@@ -1,12 +1,16 @@
-# by gherardo.varando [gherardo.varando@gmail.com](mailto:gherardo.varando@gmail.com)
+[![npm version](https://badge.fury.io/js/leaflet-csvtiles.svg)](https://badge.fury.io/js/leaflet-csvtiles)
 
-# L.CRS.Simple [demo](https://gherardovarando.github.io/leaflet-csvtiles/demo/index.html)
 
-# L.CRS.EPSG3857 [demo](https://gherardovarando.github.io/leaflet-csvtiles/demo/index2.html) (points have no meaning herer)
-
+# leaflet-csvtiles
 leaflet-csvtiles is a leaflet plugin that load points from tiled csv files, using the amazing [PapaParse](http://papaparse.com/) library.
 
 **This plugin was developed mainly for application with Simple CRS, with different CRS the tiles will always be uniformly spaced in lat and lng (so not uniformly spaced in the map see the demo for the problem visualization)**
+
+## Demos 
+
+### L.CRS.Simple [demo](https://gherardovarando.github.io/leaflet-csvtiles/demo/index.html)
+
+### L.CRS.EPSG3857 [demo](https://gherardovarando.github.io/leaflet-csvtiles/demo/index2.html) (points have no meaning here)
 
 ## API
 

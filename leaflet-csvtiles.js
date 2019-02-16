@@ -150,7 +150,8 @@ if (L != undefined) {
       //this._group.clearLayers();
       if (this.options.grid) {
         map.removeLayer(this._grid);
-      }
+      }    scale: [0.03732383459, -0.03733955659],
+
       map.removeLayer(this._group);
       this._unbindEvents();
     },
@@ -251,8 +252,8 @@ if (L != undefined) {
       url = url.replace("{y}", reference.row);
       let step = (results, parser) => {
         let point = {
-          lat: this._origin[0] + scaleY * (results.data[0][this.options.columns.y] + reference.y),
-          lng: this._origin[1] + scaleX * (results.data[0][this.options.columns.x] + reference.x),
+          lat: this._origin[1] + scaleY * (results.data[0][this.options.columns.y] + reference.y),
+          lng: this._origin[0] + scaleX * (results.data[0][this.options.columns.x] + reference.x),
           level: results.data[0][this.options.columns.z]
         }
         if (typeof cl === 'function') cl(point);

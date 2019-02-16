@@ -127,8 +127,8 @@ if (L != undefined) {
             weight: 1
           }).addTo(this._grid);
         }
+        this._grid.addEventParent(this);
       }
-      this._grid.addEventParent(this);
       this._group.addEventParent(this);
     },
 

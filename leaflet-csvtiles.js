@@ -85,6 +85,10 @@ if (L != undefined) {
         }
       }
 
+      if (typeof this.options.pointsFunction === "function") {
+        this._pointFunction = this.options.pointsFunction ;
+      }
+
       if (!Array.isArray(this.options.size)) {
         this.options.size = [this.options.size, this.options.size, this.options.size];
       }
@@ -311,7 +315,6 @@ if (L != undefined) {
     },
 
     _addPoints: function(point) {
-
       let f = this._pointFunction;
       if (this._multilevel && (typeof f.ml === 'function')) {
         f = f.ml;

@@ -55,7 +55,6 @@ if (L != undefined) {
     _origin: [0, 0],
     _url: '',
     _multilevel: false,
-    _parser : Papa.parse,
 
     initialize: function(url, options, parser) {
       L.Util.setOptions(this, options);
@@ -64,7 +63,11 @@ if (L != undefined) {
         this._multilevel = true;
       }
 
-      if (typeof parser === 'function') this._parser = parser;
+      if (typeof parser === 'function') {
+        this._parser = parser;
+      } else if (Papa && Papa.parse) {
+        this._parser = Papa.parse;
+      }
 
       if (typeof this.options.typeOfPoint === 'string') {
         switch (this.options.typeOfPoint) {
@@ -80,6 +83,10 @@ if (L != undefined) {
           default:
             this._pointFunction = L.circleMarker;
         }
+      }
+
+      if (typeof this.options.pointsFunction === "function") {
+        this._pointFunction = this.options.pointsFunction ;
       }
 
       if (!Array.isArray(this.options.size)) {
@@ -124,8 +131,8 @@ if (L != undefined) {
             weight: 1
           }).addTo(this._grid);
         }
+        this._grid.addEventParent(this);
       }
-      this._grid.addEventParent(this);
       this._group.addEventParent(this);
     },
 
@@ -150,8 +157,7 @@ if (L != undefined) {
       //this._group.clearLayers();
       if (this.options.grid) {
         map.removeLayer(this._grid);
-      }    scale: [0.03732383459, -0.03733955659],
-
+      }
       map.removeLayer(this._group);
       this._unbindEvents();
     },
@@ -254,7 +260,8 @@ if (L != undefined) {
         let point = {
           lat: this._origin[1] + scaleY * (results.data[0][this.options.columns.y] + reference.y),
           lng: this._origin[0] + scaleX * (results.data[0][this.options.columns.x] + reference.x),
-          level: results.data[0][this.options.columns.z]
+          level: results.data[0][this.options.columns.z],
+          data: results.data[0]
         }
         if (typeof cl === 'function') cl(point);
       }
@@ -308,7 +315,6 @@ if (L != undefined) {
     },
 
     _addPoints: function(point) {
-
       let f = this._pointFunction;
       if (this._multilevel && (typeof f.ml === 'function')) {
         f = f.ml;

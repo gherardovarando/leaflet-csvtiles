@@ -258,10 +258,10 @@ if (L != undefined) {
       url = url.replace("{y}", reference.row);
       let step = (results, parser) => {
         let point = {
-          lat: this._origin[1] + scaleY * (results.data[0][this.options.columns.y] + reference.y),
-          lng: this._origin[0] + scaleX * (results.data[0][this.options.columns.x] + reference.x),
-          level: results.data[0][this.options.columns.z],
-          data: results.data[0]
+          lat: this._origin[1] + scaleY * (results.data[this.options.columns.y] + reference.y),
+          lng: this._origin[0] + scaleX * (results.data[this.options.columns.x] + reference.x),
+          level: results.data[this.options.columns.z],
+          data: results.data
         }
         if (typeof cl === 'function') cl(point);
       }
